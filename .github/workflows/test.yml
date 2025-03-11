@@ -19,7 +19,8 @@ jobs:
   step-1:
     # The type of runner that the job will run on
     runs-on: self-hosted
-
+    outputs:
+      retorno: ${{ steps.get_date.outputs.retorno }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -30,7 +31,19 @@ jobs:
         run: echo Hello, world!
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: Get date
+        id: get_date
+        run: echo "retorno=$(date)" >> $GITHUB_OUTPUT
+
+
+  step-2:
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+    needs: step-1
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, the step-1 returned ${{ needs.step-1.outputs.retorno }}
